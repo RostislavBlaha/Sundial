@@ -1,6 +1,7 @@
 import React from "react"
 
 import "./App.css"
+import FullScreenOverlay from "./components/FullScreenOverlay";
 import SundialDiagram from "./components/SundialDiagram"
 
 const designer = {
@@ -93,6 +94,7 @@ function App() {
 
 	return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <FullScreenOverlay/>
       <div style={{ width: 'auto' }}>
         <SundialDiagram data={designer} radius={500} />
       </div>

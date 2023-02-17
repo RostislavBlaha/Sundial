@@ -21,6 +21,14 @@ const SundialDiagram: React.FC<Props> = ({
   const segmentAngle = (2 * Math.PI) / segmentCount;
   const outerRadius = radius + textOffset;
 
+	/**
+	 * Updates the level of a segment with the given id
+	 * ------------------------------------------------
+	 * 
+	 * @param {number} id - The id of the segment to be updated
+	 * @param {number} level - The new level for the segment
+	 * @returns {void}
+	 */
 	const updateSegment = (id: number, level: number )  => {
 		const newSegments = dial.segments;
 		const index = newSegments.findIndex((segment) => segment.id === id);

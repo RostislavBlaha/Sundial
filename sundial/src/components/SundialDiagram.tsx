@@ -1,4 +1,3 @@
-import { index } from "d3";
 import React from "react";
 import { DialDto, SegmentDto } from "../dto/Dial"
 
@@ -53,6 +52,10 @@ const SundialDiagram: React.FC<Props> = ({
         />
       </defs>
 
+			{Array.from({length:levelCount}).map((_, index) => (
+				<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (levelCount - index)} fill={index % 2 === 0 ? "#f2f2f2" : "#fff"} stroke="#CCC" />
+      ))}
+
       {Array.from({ length: segmentCount }).map((_, index) => {
         const startAngle = index * segmentAngle;
 
@@ -66,7 +69,7 @@ const SundialDiagram: React.FC<Props> = ({
           <g key={index}>
             <path
               d={`M${radius + textOffset + textSize},${radius + textOffset + textSize } L${innerCircle.startX},${innerCircle.startY} A${radius},${radius} 0 0,1 ${innerCircle.endX},${innerCircle.endY} Z`}
-              fill="#F2F2F2"
+              fill="none"
               stroke="#CCC"
             />
             <path fill="none" id={textPathId} d={`M${outerCircle.startX},${outerCircle.startY} A${outerRadius},${outerRadius} 0 0,1 ${outerCircle.endX},${outerCircle.endY}`} />
@@ -90,6 +93,7 @@ const SundialDiagram: React.FC<Props> = ({
 			{Array.from({length:levelCount}).map((_, index) => (
 				<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (index + 1)} fill="none" stroke="#CCC" />
       ))}
+
     </svg>
   );
 };

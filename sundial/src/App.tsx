@@ -92,9 +92,11 @@ const designer = {
 function App() {
 
 	return (
-		<div>
-        <SundialDiagram data={designer} radius={500}/>
-		</div>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: 'auto' }}>
+        <SundialDiagram data={designer} radius={500} />
+      </div>
+    </div>
 
 	)
 }

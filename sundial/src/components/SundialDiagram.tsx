@@ -1,5 +1,5 @@
-import React from "react";
-import { DialDto, SegmentDto } from "../dto/Dial"
+import React, { useState } from "react";
+import { DialDto } from "../dto/Dial"
 import Segment from "./Segment";
 
 interface Props {
@@ -9,41 +9,25 @@ interface Props {
   textSize?: number;
 }
 
-const getTextPathStartAndEndPoints = (
-  radius: number,
-  angle: number,
-  offset: number,
-  segmentCount: number
-) => {
-  const endAngle = angle + 2 * Math.PI / segmentCount
-
-  const startX = radius + radius * Math.sin(angle) + offset;
-  const startY = radius - radius * Math.cos(angle) + offset;
-
-  const endX = radius + radius * Math.sin(endAngle) + offset;
-  const endY = radius - radius * Math.cos(endAngle) + offset;
-
-  return {
-    startX,
-    startY,
-    endX,
-    endY,
-  };
-};
-
 const SundialDiagram: React.FC<Props> = ({ 
   data,
   radius,
   textOffset = 20,
   textSize = 16,
  }) => {
-
-  const segmentCount = data.segments.length;
-  const levelCount = data.levels.length;
+	const [dial, setDial] = useState<DialDto>(data)
+  const segmentCount = dial.segments.length;
+  const levelCount = dial.levels.length;
   const segmentAngle = (2 * Math.PI) / segmentCount;
   const outerRadius = radius + textOffset;
 
-  // Render the chart
+	const updateSegment = (id: number, level: number )  => {
+		const newSegments = dial.segments;
+		const index = newSegments.findIndex((segment) => segment.id === id);
+		newSegments[index] = { ...newSegments[index], level };
+		setDial({ ...dial, segments: newSegments });
+	}
+
   return (
     <svg width={(outerRadius+textSize) * 2} height={(outerRadius+textSize) * 2}>
       <defs>
@@ -66,8 +50,10 @@ const SundialDiagram: React.FC<Props> = ({
 						textOffset={textOffset}
 						textSize={textSize}
 						segmentCount={segmentCount}
-            segment={data.segments[index]}
+						levelCount={levelCount}
+            segment={dial.segments[index]}
 						index={index}
+						updateSegment={updateSegment}
           />
       ))}
 
@@ -75,21 +61,15 @@ const SundialDiagram: React.FC<Props> = ({
 				<>
 					<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (index + 1)} fill="none" stroke="#CCC" />
 					<g key={`level-${index}`}>
-						<rect
-							x={outerRadius - 30 + textSize}
-							y={radius - (index * radius) / levelCount - textSize / 2 - 10}
-							width={60}
-							height={textSize + 20}
-							fill={index % 2 === 0 ? "#f2f2f2" : "#fff"}
-						/>
+
 						<text
 							x={outerRadius + textSize}
-							y={radius - (index * radius) / levelCount}
+							y={radius - (index * radius) / levelCount - textSize}
 							fontSize={textSize}
 							textAnchor="middle"
 							dominantBaseline="central"
 						>
-							{data.levels[index]}
+							{dial.levels[index]}
 						</text>
 					</g>
 				</>

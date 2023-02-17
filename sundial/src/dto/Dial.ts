@@ -1,9 +1,9 @@
 export interface DialDto {
-    id: Number,
-    name: String,
+    id: number,
+    name: string,
     annotations: AnnotationDto[],
     segments: SegmentDto[],
-    levels: String[]
+    levels: string[]
 }
 
 export interface AnnotationDto{
@@ -13,8 +13,8 @@ export interface AnnotationDto{
 }
 
 export interface SegmentDto {
-    id: Number,
+    id: number,
     name: string,
-    level: Number
+    level: number
 }
 

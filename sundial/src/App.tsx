@@ -46,7 +46,7 @@ const designer = {
     },
     {
       id: 6,
-      name: "Information Architecture & Content Strategy",
+      name: "IA & Content Strategy",
       level: 3
     },
     {

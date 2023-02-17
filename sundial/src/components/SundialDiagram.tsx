@@ -72,11 +72,15 @@ const SundialDiagram: React.FC<Props> = ({
               fill="none"
               stroke="#CCC"
             />
-            <path fill="none" id={textPathId} d={`M${outerCircle.startX},${outerCircle.startY} A${outerRadius},${outerRadius} 0 0,1 ${outerCircle.endX},${outerCircle.endY}`} />
+						{index > segmentCount/4 && index < 3*segmentCount/4 
+						? <path fill="none" id={textPathId} d={`M${outerCircle.endX},${outerCircle.endY} A${outerRadius},${outerRadius} 0 0,0 ${outerCircle.startX},${outerCircle.startY}`} />
+						: <path fill="none" id={textPathId} d={`M${outerCircle.startX},${outerCircle.startY} A${outerRadius},${outerRadius} 0 0,1 ${outerCircle.endX},${outerCircle.endY}`} />
+						}
             <text
               fill="#000"
               dominantBaseline="central"
               fontSize={textSize}
+							
             >
               <textPath 
               href={`#${textPathId}`}

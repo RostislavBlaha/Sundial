@@ -95,7 +95,27 @@ const SundialDiagram: React.FC<Props> = ({
       })}
 
 			{Array.from({length:levelCount}).map((_, index) => (
-				<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (index + 1)} fill="none" stroke="#CCC" />
+				<>
+					<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (index + 1)} fill="none" stroke="#CCC" />
+					<g key={`level-${index}`}>
+						<rect
+							x={outerRadius - 30 + textSize}
+							y={radius - (index * radius) / levelCount - textSize / 2 - 10}
+							width={60}
+							height={textSize + 20}
+							fill={index % 2 === 0 ? "#f2f2f2" : "#fff"}
+						/>
+						<text
+							x={outerRadius + textSize}
+							y={radius - (index * radius) / levelCount}
+							fontSize={textSize}
+							textAnchor="middle"
+							dominantBaseline="central"
+						>
+							{data.levels[index]}
+						</text>
+					</g>
+				</>
       ))}
 
     </svg>

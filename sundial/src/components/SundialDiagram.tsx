@@ -1,5 +1,6 @@
 import React from "react";
 import { DialDto, SegmentDto } from "../dto/Dial"
+import Segment from "./Segment";
 
 interface Props {
   data: DialDto;
@@ -56,43 +57,19 @@ const SundialDiagram: React.FC<Props> = ({
 				<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (levelCount - index)} fill={index % 2 === 0 ? "#f2f2f2" : "#fff"} stroke="#CCC" />
       ))}
 
-      {Array.from({ length: segmentCount }).map((_, index) => {
-        const startAngle = index * segmentAngle;
-
-        const innerCircle = getTextPathStartAndEndPoints(radius, startAngle, textOffset + textSize, segmentCount);
-
-        const outerCircle = getTextPathStartAndEndPoints(outerRadius, startAngle, textSize, segmentCount);
-
-        const textPathId = `textPath-${index}`;
-
-        return (
-          <g key={index}>
-            <path
-              d={`M${radius + textOffset + textSize},${radius + textOffset + textSize } L${innerCircle.startX},${innerCircle.startY} A${radius},${radius} 0 0,1 ${innerCircle.endX},${innerCircle.endY} Z`}
-              fill="none"
-              stroke="#CCC"
-            />
-						{index > segmentCount/4 && index < 3*segmentCount/4 
-						? <path fill="none" id={textPathId} d={`M${outerCircle.endX},${outerCircle.endY} A${outerRadius},${outerRadius} 0 0,0 ${outerCircle.startX},${outerCircle.startY}`} />
-						: <path fill="none" id={textPathId} d={`M${outerCircle.startX},${outerCircle.startY} A${outerRadius},${outerRadius} 0 0,1 ${outerCircle.endX},${outerCircle.endY}`} />
-						}
-            <text
-              fill="#000"
-              dominantBaseline="central"
-              fontSize={textSize}
-							
-            >
-              <textPath 
-              href={`#${textPathId}`}
-              text-anchor="middle"
-              startOffset="50%"
-              >
-                {data.segments[index].name}
-              </textPath>
-            </text>
-          </g>
-        );
-      })}
+      {Array.from({ length: segmentCount }).map((_, index) => (
+          <Segment
+            key={`segment-${index}`}
+						radius={radius}
+						outerRadius={outerRadius}
+						startAngle={index * segmentAngle}
+						textOffset={textOffset}
+						textSize={textSize}
+						segmentCount={segmentCount}
+            segment={data.segments[index]}
+						index={index}
+          />
+      ))}
 
 			{Array.from({length:levelCount}).map((_, index) => (
 				<>

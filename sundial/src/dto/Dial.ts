@@ -14,7 +14,7 @@ export interface AnnotationDto{
 
 export interface SegmentDto {
     id: Number,
-    name: String,
+    name: string,
     level: Number
 }
 

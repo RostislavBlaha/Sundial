@@ -1,48 +1,46 @@
+import { index } from "d3";
 import React from "react";
 import { DialDto, SegmentDto } from "../dto/Dial"
 
 interface Props {
   data: DialDto;
   radius: number;
+  textOffset?: number;
+  textSize?: number;
 }
 
 const getTextPathStartAndEndPoints = (
   radius: number,
-  outerRadius: number,
   angle: number,
-  textOffset: number,
-  textSize: number
+  offset: number,
+  segmentCount: number
 ) => {
-  const startX = radius + radius * Math.sin(angle) + textOffset + textSize;
-  const startY = radius - radius * Math.cos(angle) + textOffset + textSize;
+  const endAngle = angle + 2 * Math.PI / segmentCount
 
-  const endX = radius + radius * Math.sin(angle + 2 * Math.PI / 12) + textOffset + textSize;
-  const endY = radius - radius * Math.cos(angle + 2 * Math.PI / 12) + textOffset + textSize;
+  const startX = radius + radius * Math.sin(angle) + offset;
+  const startY = radius - radius * Math.cos(angle) + offset;
 
-  const startOuterX = outerRadius + outerRadius * Math.sin(angle) + textSize;
-  const startOuterY = outerRadius - outerRadius * Math.cos(angle) + textSize;
-
-  const endOuterX = outerRadius + outerRadius * Math.sin(angle + 2 * Math.PI / 12) + textSize;
-  const endOuterY = outerRadius - outerRadius * Math.cos(angle + 2 * Math.PI / 12) + textSize;
+  const endX = radius + radius * Math.sin(endAngle) + offset;
+  const endY = radius - radius * Math.cos(endAngle) + offset;
 
   return {
     startX,
     startY,
     endX,
     endY,
-    startOuterX,
-    startOuterY,
-    endOuterX,
-    endOuterY,
   };
 };
 
-const SundialDiagram: React.FC<Props> = ({ data, radius }) => {
+const SundialDiagram: React.FC<Props> = ({ 
+  data,
+  radius,
+  textOffset = 20,
+  textSize = 16,
+ }) => {
 
-  const competencyCount = data.segments.length
-  const segmentAngle = (2 * Math.PI) / competencyCount;
-  const textOffset = 20;
-  const textSize = 16;
+  const segmentCount = data.segments.length;
+  const levelCount = data.levels.length;
+  const segmentAngle = (2 * Math.PI) / segmentCount;
   const outerRadius = radius + textOffset;
 
   // Render the chart
@@ -54,36 +52,24 @@ const SundialDiagram: React.FC<Props> = ({ data, radius }) => {
           d={`M${radius},${radius - 30} m-${radius - 30},0 a${radius - 30},${radius - 30} 0 1,0 ${2 * (radius - 30)},0 a${radius - 30},${radius - 30} 0 1,0 -${2 * (radius - 30)},0`}
         />
       </defs>
-      <circle cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={radius} fill="#FFF" stroke="#CCC" />
-      {Array.from({ length: competencyCount }).map((_, index) => {
+
+      {Array.from({ length: segmentCount }).map((_, index) => {
         const startAngle = index * segmentAngle;
-        const endAngle = (index + 1) * segmentAngle;
 
-        // Inner circle
-        const startX = radius + radius * Math.sin(startAngle) + textOffset + textSize;
-        const startY = radius - radius * Math.cos(startAngle) + textOffset + textSize;
+        const innerCircle = getTextPathStartAndEndPoints(radius, startAngle, textOffset + textSize, segmentCount);
 
-        const endX = radius + radius * Math.sin(endAngle) + textOffset + textSize;
-        const endY = radius - radius * Math.cos(endAngle) + textOffset + textSize;
-
-        // Outer circle
-        const startOuterX = outerRadius + outerRadius * Math.sin(startAngle) + textSize;
-        const startOuterY = outerRadius - outerRadius * Math.cos(startAngle) + textSize;
-
-        const endOuterX = outerRadius + outerRadius * Math.sin(endAngle) + textSize;
-        const endOuterY = outerRadius - outerRadius * Math.cos(endAngle) + textSize;
-
+        const outerCircle = getTextPathStartAndEndPoints(outerRadius, startAngle, textSize, segmentCount);
 
         const textPathId = `textPath-${index}`;
 
         return (
           <g key={index}>
             <path
-              d={`M${radius + textOffset + textSize},${radius + textOffset + textSize } L${startX},${startY} A${radius},${radius} 0 0,1 ${endX},${endY} Z`}
+              d={`M${radius + textOffset + textSize},${radius + textOffset + textSize } L${innerCircle.startX},${innerCircle.startY} A${radius},${radius} 0 0,1 ${innerCircle.endX},${innerCircle.endY} Z`}
               fill="#F2F2F2"
               stroke="#CCC"
             />
-            <path fill="none" id={textPathId} d={`M${startOuterX},${startOuterY} A${outerRadius},${outerRadius} 0 0,1 ${endOuterX},${endOuterY}`} />
+            <path fill="none" id={textPathId} d={`M${outerCircle.startX},${outerCircle.startY} A${outerRadius},${outerRadius} 0 0,1 ${outerCircle.endX},${outerCircle.endY}`} />
             <text
               fill="#000"
               dominantBaseline="central"
@@ -100,6 +86,10 @@ const SundialDiagram: React.FC<Props> = ({ data, radius }) => {
           </g>
         );
       })}
+
+			{Array.from({length:levelCount}).map((_, index) => (
+				<circle key={`circle-${index}`} cx={outerRadius  + textSize} cy={outerRadius  + textSize} r={(radius / levelCount) * (index + 1)} fill="none" stroke="#CCC" />
+      ))}
     </svg>
   );
 };

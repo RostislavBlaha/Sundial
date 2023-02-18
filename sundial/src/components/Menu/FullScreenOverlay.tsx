@@ -1,25 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Transition } from 'react-transition-group';
+import { DialDto } from '../../dto/Dial';
 import Logo from './Logo';
 
 type FullScreenOverlayProps = {
   textSize?: number;
+  onSave: () => void;
+	onLoad: (dial: DialDto) => void;
+	onNew: () => void;
 };
 
-const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
+const FullScreenOverlay = ({ textSize = 32, onSave, onLoad, onNew }: FullScreenOverlayProps) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 	const [showMenu, setShowMenu] = useState<boolean>(true);
 
   const handleNewSundialClick = () => {
     setShowMenu(false);
+		onNew();
   };
 
-  const handleMenuClose = () => {
-    setShowMenu(true);
-  };
+	const handleOpenClick = () => {
+		if (inputFile.current)
+			inputFile.current.click();
+	}
+	
+	const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files)
+		{
+		const file = event.target.files[0];
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			if (event.target){
+				const content = event.target.result as string;
+				const dial = JSON.parse(content) as DialDto;
+				onLoad(dial);
+				setShowMenu(false);
+			}
+		};
+		reader.readAsText(file);
+	}
+	};
+	
+
+  const nodeRef = useRef(null);
+	const inputFile = useRef<HTMLInputElement | null>(null);
 
   return (
-		<Transition in={showMenu} timeout={300}>
+		<Transition 
+			nodeRef={nodeRef} 
+			in={showMenu} 
+			timeout={300}
+			//unmountOnExit
+			appear
+		>
+			{(state) => (
 			<div
 				style={{
 					backgroundColor: 'black',
@@ -29,6 +63,9 @@ const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
 					top: 0,
 					left: 0,
 					zIndex: 999,
+					transform: `translate(${state === 'entered' ? 0 : '-40%'}) 
+											scale(${state === 'entered' ? 1 : 0.2}, 1)`,
+          transition: 'transform 300ms ease-in-out',
 				}}
 			>
 				<div
@@ -36,7 +73,9 @@ const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
 						position: 'absolute',
 						left: '50%',
 						top: '40%',
-						transform: 'translate(-50%, -50%)',
+						transform: `translate(-50%, -50%) scale(${
+							state === 'entered' ? 1 : 5
+						}, 1)`,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
@@ -59,13 +98,21 @@ const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
 									fontSize: `${textSize}px`,
 								}}
 							>
-								New Sundial
+								New <span style={{fontStyle: 'italic'}}>Sundial</span> Diagram
 							</a>
 						</li>
+						<input
+							type="file"
+							id="fileInput"
+							style={{ display: "none" }}
+							ref={inputFile}
+							onChange={handleFileOpen}
+						/>
 						<li
 							style={{ marginBottom: '16px' }}
 							onMouseOver={() => setSelectedItem('Load')}
 							onMouseOut={() => setSelectedItem(null)}
+							onClick={handleOpenClick}
 						>
 							<a
 								href="#"
@@ -82,6 +129,7 @@ const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
 							style={{ marginBottom: '16px' }}
 							onMouseOver={() => setSelectedItem('Save')}
 							onMouseOut={() => setSelectedItem(null)}
+							onClick={onSave}
 						>
 							<a
 								href="#"
@@ -113,7 +161,7 @@ const FullScreenOverlay = ({ textSize = 32 }: FullScreenOverlayProps) => {
 						</li>
 					</ul>
 				</div>
-			</div>
+			</div>)}
 		</Transition>
   );
 };

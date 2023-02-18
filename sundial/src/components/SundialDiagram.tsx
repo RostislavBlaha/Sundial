@@ -4,6 +4,7 @@ import Segment from "./Segment";
 
 interface Props {
   data: DialDto;
+  setData: (newdial: DialDto) => void
   radius: number;
   textOffset?: number;
   textSize?: number;
@@ -14,10 +15,10 @@ const SundialDiagram: React.FC<Props> = ({
   radius,
   textOffset = 20,
   textSize = 16,
+  setData
  }) => {
-	const [dial, setDial] = useState<DialDto>(data)
-  const segmentCount = dial.segments.length;
-  const levelCount = dial.levels.length;
+  const segmentCount = data.segments.length;
+  const levelCount = data.levels.length;
   const segmentAngle = (2 * Math.PI) / segmentCount;
   const outerRadius = radius + textOffset;
 
@@ -30,10 +31,10 @@ const SundialDiagram: React.FC<Props> = ({
 	 * @returns {void}
 	 */
 	const updateSegment = (id: number, level: number )  => {
-		const newSegments = dial.segments;
+		const newSegments = data.segments;
 		const index = newSegments.findIndex((segment) => segment.id === id);
 		newSegments[index] = { ...newSegments[index], level };
-		setDial({ ...dial, segments: newSegments });
+		setData({ ...data, segments: newSegments });
 	}
 
   return (
@@ -59,7 +60,7 @@ const SundialDiagram: React.FC<Props> = ({
 						textSize={textSize}
 						segmentCount={segmentCount}
 						levelCount={levelCount}
-            segment={dial.segments[index]}
+            segment={data.segments[index]}
 						index={index}
 						updateSegment={updateSegment}
           />
@@ -77,7 +78,7 @@ const SundialDiagram: React.FC<Props> = ({
 							textAnchor="middle"
 							dominantBaseline="central"
 						>
-							{dial.levels[index]}
+							{data.levels[index]}
 						</text>
 					</g>
 				</>

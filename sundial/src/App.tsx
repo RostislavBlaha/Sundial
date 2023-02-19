@@ -1,8 +1,8 @@
 import React, {useState} from "react"
 
 import "./App.css"
+import Detail from "./components/Detail/Detail";
 import FullScreenOverlay from "./components/Menu/FullScreenOverlay";
-import SundialDiagram from "./components/SundialDiagram"
 import { DialDto } from "./dto/Dial";
 
 const designer = {
@@ -210,9 +210,7 @@ function App() {
 				onNew={resetDiagram}     
         onSave={saveToFile}
 				onLoad={handleFileSelect}/>
-      <div style={{ width: 'auto', paddingLeft:'20%', paddingTop:50 }}>
-        <SundialDiagram data={dial} setData={setDial} radius={400} />
-      </div>
+      <Detail dial={dial} setDial={setDial}/>
     </div>
 
 	)

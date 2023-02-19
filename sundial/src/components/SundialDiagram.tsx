@@ -4,7 +4,7 @@ import Segment from "./Segment";
 
 interface Props {
   data: DialDto;
-  setData: (newdial: DialDto) => void
+  setData: (newdial: DialDto) => void;
   radius: number;
   textOffset?: number;
   textSize?: number;

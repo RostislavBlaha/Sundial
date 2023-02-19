@@ -8,8 +8,8 @@ export interface DialDto {
 
 export interface AnnotationDto{
     id: Number,
-    label: String,
-    value: String
+    label: string,
+    value: string
 }
 
 export interface SegmentDto {

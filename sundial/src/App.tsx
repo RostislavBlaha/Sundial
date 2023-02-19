@@ -5,94 +5,14 @@ import Detail from "./components/Detail/Detail";
 import FullScreenOverlay from "./components/Menu/FullScreenOverlay";
 import { DialDto } from "./dto/Dial";
 
-const designer = {
-	id: 123,
-	name: "John Doe",
-	annotations: [
-		{
-			id: 1,
-			label: "Evaluation Date",
-			value: "2022-01-31"
-		},
-		{
-			id: 2,
-			label: "Evaluator",
-			value: "Jane Smith"
-		}
-	],
-	segments: [
-		{
-			id: 1,
-			name: "Design Craft & Knowledge",
-			level: 0
-		},
-		{
-			id: 2,
-			name: "Technical Knowledge",
-			level: 0
-		},
-		{
-			id: 3,
-			name: "User Research",
-			level: 0
-		},
-		{
-			id: 4,
-			name: "Data-driven Design",
-			level: 0
-		},
-		{
-			id: 5,
-			name: "Prototyping",
-			level: 0
-		},
-		{
-			id: 6,
-			name: "IA & Content Strategy",
-			level: 0
-		},
-		{
-			id: 7,
-			name: "Communication",
-			level: 0
-		},
-		{
-			id: 8,
-			name: "Empathy",
-			level: 0
-		},
-		{
-			id: 9,
-			name: "Collaboration",
-			level: 0
-		},
-		{
-			id: 10,
-			name: "Presenting",
-			level: 0
-		},
-		{
-			id: 11,
-			name: "Mentoring",
-			level: 0
-		},
-		{
-			id: 12,
-			name: "Leadership Skills",
-			level: 0
-		}
-	],
-	levels: [
-		"N/A",
-		"Learning",
-		"Applying",
-		"Advanced",
-		"Expert"
-	]
-}
-
 function App() {
-  const [dial, setDial] = useState<DialDto>(designer);
+  const [dial, setDial] = useState<DialDto>({
+		id: 123,
+		name: "",
+		annotations: [],
+		segments: [],
+		levels: []
+	});
 
   const saveToFile = () => {
 		const fileName = 'sundial.json';
@@ -115,20 +35,22 @@ function App() {
     setDial(newDial);
   };
 
+	const today : string = new Date().toLocaleDateString();
+
 	const resetDiagram = () => {
 		setDial({
 			id: 123,
-			name: "John Doe",
+			name: "Name",
 			annotations: [
 				{
 					id: 1,
-					label: "Evaluation Date",
-					value: "2022-01-31"
+					label: "Date",
+					value: today,
 				},
 				{
 					id: 2,
-					label: "Evaluator",
-					value: "Jane Smith"
+					label: "Manager",
+					value: "Manager Name"
 				}
 			],
 			segments: [

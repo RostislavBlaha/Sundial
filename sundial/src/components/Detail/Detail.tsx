@@ -9,8 +9,7 @@ interface Props {
 }
 
 const Detail: React.FC<Props> = ({dial, setDial}) => {
-  const [annotations, setAnnotations] = useState(dial.annotations);
-
+ 
   const handleHeaderChange = (e: React.FormEvent<HTMLDivElement>) => {
     const newContent = (e.target as HTMLDivElement).innerText;
     setDial({...dial, name: newContent})

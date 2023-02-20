@@ -28,6 +28,10 @@ const FullScreenOverlay = ({ textSize = 32, onSave, onLoad, onNew }: FullScreenO
 		if (event.target.files)
 		{
 		const file = event.target.files[0];
+		if (file.type !== 'application/json') {
+      alert('Wrong file type!');
+      return;
+    }
 		const reader = new FileReader();
 		reader.onload = (event) => {
 			if (event.target){
